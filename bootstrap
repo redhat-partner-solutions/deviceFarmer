@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo subscription-manager register --username $RH_USER --password $RH_PASS
+sudo subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+sudo dnf -y upgrade && \
+sudo dnf -y install git buildah podman skopeo 

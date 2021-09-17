@@ -1,0 +1,38 @@
+#!/bin/bash
+set -e
+
+
+HERE=$(dirname "$(readlink --canonicalize "$BASH_SOURCE")")
+. "$HERE/_env"
+
+WORK=$PWD
+
+#!/bin/bash
+set -e
+
+
+HERE=$(dirname "$(readlink --canonicalize "$BASH_SOURCE")")
+. "$HERE/_env"
+
+function build_farmer {
+
+	#build container image using RH ubi
+	cd $WORK
+	CONTAINER_ID=$(buildah from "$BASE_IMAGE")
+
+	#install requirements
+	buildah run ${CONTAINER_ID} -- dnf -y install --enablerepo ${REPO} \
+		nodejs \
+		pkg-config \
+		bzip2 \
+		wget
+	#install rethinkdb
+	buildah run ${CONTAINER_ID} -- wget https://download.rethinkdb.com/repository/raw/dist/rethinkdb-2.4.1.tgz \
+		tar xf rethinkdb-2.4.1.tgz \
+		cd rethinkdb-2.4.1 \
+		./configure --allow-fetch \
+		make
+
+}
+
+$HERE/build_farmer
