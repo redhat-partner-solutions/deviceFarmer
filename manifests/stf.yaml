@@ -1,0 +1,222 @@
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: stf-svc
+  labels:
+    apps.kubernetes.io/name: stf-svc
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: stf
+  ports:
+  - name: admin
+    protocol: TCP
+    targetPort: 3001
+    port: 3001
+    nodePort: 30002
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: stf-app
+  labels:
+    app.kubernetes.io/name: stf-app
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: stf-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: stf-app
+    spec:
+      hostname: kind-worker
+      containers: 
+      - name: stf-app
+        image: registry.hub.docker.com/devicefarmer/stf:latest
+        imagePullPolicy: Always
+        command: ["stf"]
+        args:
+        - "app"
+        - --secret
+        - "nosecret"
+        - --port
+        - "3001"
+        - --auth-url
+        - "https://{{ VALUE }}/auth/mock"
+        - --websocket-url
+        - "https://{{ VALUE }}/auth/mock"
+        ports:
+        - containerPort: 3001
+          name: bind-port
+        env:
+          - name: TZ
+            value: 'Europe/Madrid'
+          - name: RETHINKDB_PORT_28015_TCP
+            value: tcp://rethinkdb:28015
+          - name: STF_ADMIN_EMAIL
+            value: 'me@redhat.com'
+          - name: STF_ADMIN_NAME
+            value: 'jose'
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: stf
+  labels:
+    app.kubernetes.io/name: stf
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: stf
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: stf
+    spec:
+      hostname: kind-worker
+      containers: 
+      - name: stf-api
+        image: registry.hub.docker.com/devicefarmer/stf:latest
+        imagePullPolicy: Always
+        command: ["stf"]
+        args:
+        - api
+        - --secret
+        - "nosecret"
+        - --port
+        - "3001"
+        - --connect-sub
+        - "tcp://{{ template "fullname" . }}-triproxy-app:7150"
+        - --connect-push
+        - "tcp://{{ template "fullname" . }}-triproxy-app:7170"
+        ports:
+        - containerPort: 3001
+          name: bind-port
+        env:
+          - name: TZ
+            value: 'Europe/Madrid'
+          - name: RETHINKDB_PORT_28015_TCP
+            value: tcp://rethinkdb:28015
+          - name: STF_ADMIN_EMAIL
+            value: 'me@redhat.com'
+          - name: STF_ADMIN_NAME
+            value: 'jose'
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: stf-auth
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: stf-auth
+    spec:
+      containers:
+      - name: auth
+        image: registry.hub.docker.com/devicefarmer/stf:latest
+        imagePullPolicy: Always
+        command: ["stf"]
+        args:
+        - auth-mock
+        - --secret
+        - "nosecret"
+        - --port
+        - "3000"
+        - --app-url
+        - "https://{{ .Values.ingress.hostname }}/"
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: "{{ template "fullname" . }}-common-environment-variables"
+        resources:
+{{ toYaml .Values.stf.auth.resources | indent 10 }}
+      imagePullSecrets:
+        - name: {{ .Values.pullSecret }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-processor
+spec:
+  replicas: {{ .Values.stf.processor.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-processor
+    spec:
+      containers:
+      - name: processor
+        image: registry.hub.docker.com/devicefarmer/stf:latest
+        imagePullPolicy: Always
+        command: ["stf"]
+        args:
+        - processor
+        - "stf-processor"
+        - --connect-app-dealer
+        - "tcp://{{ template "fullname" . }}-triproxy-app:7160"
+        - --connect-dev-dealer
+        - "tcp://{{ template "fullname" . }}-triproxy-dev:7260"
+        env:
+        - name: RETHINKDB_PORT_28015_TCP
+          value: "tcp://{{.Values.db.url}}:{{.Values.db.port}}"
+        - name: RETHINKDB_ENV_AUTHKEY
+          value: "{{.Values.db.password}}"
+        envFrom:
+        - configMapRef:
+            name: "{{ template "fullname" . }}-common-environment-variables"
+        resources:
+{{ toYaml .Values.stf.processor.resources | indent 10 }}
+      imagePullSecrets:
+        - name: {{ .Values.pullSecret }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-reaper
+spec:
+  replicas: {{ .Values.stf.reaper.replicas}}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-reaper
+    spec:
+      containers:
+      - name: reaper
+        image: 
+        imagePullPolicy: Always
+        command: ["stf"]
+        args:
+        - reaper
+        - "dev"
+        - --connect-push
+        - "tcp://{{ template "fullname" . }}-triproxy-dev:7270"
+        - --connect-sub
+        - "tcp://{{ template "fullname" . }}-triproxy-app:7150"
+        - --heartbeat-timeout
+        -  "30000"
+        env:
+        - name: RETHINKDB_PORT_28015_TCP
+          value: "tcp://{{.Values.db.url}}:{{.Values.db.port}}"
+        - name: RETHINKDB_ENV_AUTHKEY
+          value: "{{.Values.db.password}}"
+        envFrom:
+        - configMapRef:
+            name: "{{ template "fullname" . }}-common-environment-variables"
+        resources:
+{{ toYaml .Values.stf.reaper.resources | indent 10 }}
+      imagePullSecrets:
+        - name: {{ .Values.pullSecret }}
