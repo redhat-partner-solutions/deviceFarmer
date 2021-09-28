@@ -1,0 +1,233 @@
+stf:
+  image:
+    repository: openstf/stf
+    tag: v3.2.0
+    pullPolicy: IfNotPresent
+  api:
+    replicas: 3
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  app:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  auth:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 100m
+        memory: 256Mi
+  processor:
+    replicas: 5
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  reaper:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  apkStorage:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  imgStorage:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 100m
+        memory: 256Mi
+  storage:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 100m
+        memory: 256Mi
+  triproxyDev:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  triproxyApp:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  websocket:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  migration:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 256Mi
+nginx:
+  image:
+    repository: nginx
+    tag: 1.13.8-alpine
+    pullPolicy: IfNotPresent
+  replicas: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 256Mi
+    limits:
+      cpu: 1
+      memory: 512Mi
+adb:
+  image:
+    repository: agoda/adb-butler
+    tag: latest
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 300m
+      memory: 256Mi
+    limits:
+      cpu: 1
+      memory: 2Gi
+provider:
+  real:
+    tethering:
+      enabled: false
+      dns: 8.8.8.8
+    resources:
+      limits:
+        cpu: 2
+        memory: 4096Mi
+  emulator:
+    readinessProbe:
+      initialDelaySeconds: 60
+      periodSeconds: 30
+      failureThreshold: 2
+    livenessProbe:
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+db:
+  url: rethinkdb-svc
+  port: 28015
+  password: ""
+metrics:
+  image:
+    repository: malinskiy/cron-curl-jq-alpine
+    tag: 1.0.1
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  # OpenSTF API token
+  token:
+dns:
+  resolver: coredns.kube-system
+# pullSecret: pullsecret
+ingress:
+  enabled: false
+  # By default applies proper annotation for nginx ingress
+  annotations:
+  hostname: openstf.local
+  ssl:
+    enabled: false
+    secret: openstf.local-tls-secret
+androidDevicesTolerations:
+- effect: NoSchedule
+  key: openstf.io/provider
+  operator: Equal
+  value: "true"
+emulators:
+  imagePrefix: agoda/docker-emulator-android-
+  imageVersion: 25
+  pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 1
+    limits:
+      cpu: 2
+  types:
+  - name: phone
+    args: ""
+    note: ci/uiTest/phone
+    timezone: "Etc/UTC"
+    instances:
+    - version: 26
+      count: 1
+    - version: 25
+      count: 1
+    - version: 24
+      count: 1
+    - version: 23
+      count: 1
+    - version: 22
+      count: 1
+    - version: 21
+      count: 1
+    - version: 19
+      count: 1
+    - version: 18
+      count: 1
+    - version: 17
+      count: 1
+    - version: 16
+      count: 0
+  - name: tablet7i
+    note: ci/uiTest/tablet/7inch
+    args: "skin.name=600x1024;hw.lcd.density=160;hw.lcd.height=600;hw.lcd.width=1024;hw.device.name=7in WSVGA (Tablet);avd.ini.displayname=7  WSVGA (Tablet) API 23;"
+    timezone: "Etc/UTC"
+    instances:
+    - version: 25
+      count: 1
+  - name: tablet10i
+    note: ci/uiTest/tablet/10inch
+    args: "skin.name=800x1280;hw.lcd.density=160;hw.lcd.height=800;hw.lcd.width=1280;hw.device.name=10.1in WXGA (Tablet);avd.ini.displayname=10.1  WXGA (Tablet) API 23"
+    timezone: "Etc/UTC"
+    instances:
+    - version: 25
+      count: 1
+telegraf:
+  image:
+    repository: "telegraf"
+    tag: "1.5-alpine"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 0.1
+    limits:
+      memory: 2Gi
+      cpu: 1
+  config:
+    global_tags:
+      # cluster: "mycluster"
+    agent:
+      interval: "1m"
+      round_interval: true
+      metric_buffer_limit: 1000
+      collection_jitter: "0s"
+      flush_interval: "1m"
+      flush_jitter: "0s"
+    outputs:
+      prometheus:
+        enabled: true
+      graphite:
+        enabled: false
+        # server: "graphite.server"
+        # prefix: "android.devices"
+        template: "host.tags.measurement.field"
+        timeout: 5
