@@ -31,7 +31,6 @@ metadata:
     app: {{ template "fullname" . }}-app
   name: {{ template "fullname" . }}-app
 spec:
-  type: NodePort
   ports:
    - port: 3100
      targetPort: 3000
