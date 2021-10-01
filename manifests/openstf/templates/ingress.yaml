@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-apiVersion: apps/v1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "fullname" . }}
@@ -20,8 +20,11 @@ spec:
   - host: {{ .Values.ingress.hostname }}
     http:
       paths:
-      - path: /
+      - pathType: Prefix
+        path: /
         backend:
-          serviceName: {{ template "fullname" . }}-nginx
-          servicePort: 80
+          service:
+            name: {{ template "fullname" . }}-nginx
+            port: 
+              number: 80
 {{- end -}}
