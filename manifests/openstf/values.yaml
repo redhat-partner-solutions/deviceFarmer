@@ -137,12 +137,12 @@ metrics:
   token:
 dns:
   resolver: coredns.kube-system
-# pullSecret: pullsecret
+  #pullSecret: pullsecret
 ingress:
   enabled: true
   # By default applies proper annotation for nginx ingress
   annotations:
-  hostname: openstf.local
+  hostname: farm-openstf-nginx
   ssl:
     enabled: false
     secret: openstf.local-tls-secret
