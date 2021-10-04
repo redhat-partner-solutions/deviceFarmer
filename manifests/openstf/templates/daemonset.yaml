@@ -47,23 +47,11 @@ spec:
             name: dev
           - mountPath: /sys
             name: sys
-          - mountPath: /custom-metrics
-            name: custom-metrics
-        - name: telegraf
-          image: "{{ .Values.telegraf.image.repository }}:{{ .Values.telegraf.image.tag }}"
-          imagePullPolicy: {{ .Values.telegraf.image.pullPolicy }}
           env:
           - name: HOST_IP
             valueFrom:
               fieldRef:
                  fieldPath: status.hostIP
-          resources:
-{{ toYaml .Values.telegraf.resources | indent 12 }}
-          volumeMounts:
-          - name: telegraf-config-volume
-            mountPath: /etc/telegraf
-          - name: custom-metrics
-            mountPath: /custom-metrics
         - name: stf-provider
           image: {{ .Values.stf.image.repository }}:{{ .Values.stf.image.tag }}
           args:
@@ -86,27 +74,13 @@ spec:
           volumeMounts:
           - mountPath: /var/log/stf
             name: logs
-          resources:
-{{ toYaml .Values.provider.real.resources | indent 12 }}
-      nodeSelector:
-        openstf.io/provider: "true"
-      {{- if .Values.androidDevicesTolerations }}
-      tolerations:
-{{ toYaml .Values.androidDevicesTolerations | indent 8 }}
-      {{- end }}
       volumes:
-      - configMap:
-          defaultMode: 420
-          name: "{{ template "fullname" . }}-telegraf-config"
-        name: telegraf-config-volume
       - name: dev
         hostPath:
           path: /dev
       - name: sys
         hostPath:
           path: /sys
-      - name: custom-metrics
-        emptyDir: {}
       - name: logs
         emptyDir: {}
       imagePullSecrets:

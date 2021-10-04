@@ -162,7 +162,7 @@ emulators:
     timezone: "Etc/UTC"
     instances:
     - version: 27
-      count: 1
+      count: 0
 telegraf:
   image:
     repository: "telegraf"
