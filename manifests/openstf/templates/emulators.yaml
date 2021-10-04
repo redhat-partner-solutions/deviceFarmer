@@ -59,7 +59,7 @@ spec:
           args:
           - /bin/sh
           - -c
-          - sleep 10 && stf provider "$(STF_PROVIDER_PUBLIC_IP):10001" --connect-sub "tcp://{{ template "fullname" $root }}-triproxy-dev:7250" --connect-push "tcp://{{ template "fullname" $root }}-triproxy-dev:7270" --min-port "15000" --max-port "25000" --heartbeat-interval "10000" --storage-url "https://{{ $root.Values.ingress.hostname }}/" --screen-ws-url-pattern "wss://{{ $root.Values.ingress.hostname }}/<%= serial %>/<%= publicPort %>/" --allow-remote --cleanup "false" 2>&1 | tee /var/log/stf/messages
+          - sleep 10 && stf provider "$(STF_PROVIDER_PUBLIC_IP):10001" --connect-sub "tcp://{{ template "fullname" $root }}-triproxy-dev:7250" --connect-push "tcp://{{ template "fullname" $root }}-triproxy-dev:7270" --min-port "15000" --max-port "25000" --heartbeat-interval "10000" --storage-url "http://{{ $root.Values.ingress.hostname }}/" --screen-ws-url-pattern "wss://{{ $root.Values.ingress.hostname }}/<%= serial %>/<%= publicPort %>/" --allow-remote --cleanup "false" 2>&1 | tee /var/log/stf/messages
           env:
           - name: RETHINKDB_PORT_28015_TCP
             value: "tcp://{{ $root.Values.db.url }}:{{ $root.Values.db.port }}"
@@ -73,14 +73,6 @@ spec:
           envFrom:
           - configMapRef:
               name: "{{ template "fullname" $root }}-common-environment-variables"
-          livenessProbe:
-            exec:
-              command:
-              - "/bin/sh"
-              - "-c"
-              - grep -q 'spawn adb ENOENT' /var/log/stf/messages && exit 1 || echo 'Everything ok'
-            initialDelaySeconds: 5
-            periodSeconds: 5
           resources:
 {{ toYaml $root.Values.provider.emulator.resources | indent 12 }}
           volumeMounts:
