@@ -1,25 +1,15 @@
 #!/bin/bash
 
-sudo systemctl stop systemd-resolved
-sudo systemctl disable systemd-resolved 
-sudo sed -i -e "s@\b127\\.0\\.1\\.1\b@8.8.8.8@g" /etc/resolv.conf
-sudo sed -i -e "s/search/#search/g" /etc/resolv.conf
-
-sudo k0s kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-
-sudo k0s kubectl rollout restart -n kube-system deployment/coredns
-
-echo 'core dns ok'
-
-sudo cp /var/lib/k0s/pki/admin.conf ~/admin.conf
+cp /var/lib/k0s/pki/admin.conf ~/admin.conf
 . _env
 
+#metalb 
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
-
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
 
+#metallb ip external pool
 kubectl apply -f manifests/metallb.yml
 
-kubectl apply -f manifests/deploy.yaml
+kubectl apply -f manifests/rethinkdb.yml
 
 helm install farm ./manifests/openstf/

@@ -1,2 +1,9 @@
-sudo k0s install controller --single
-sudo k0s start
+#!/bin/bash
+
+k0s install controller --single
+k0s start
+
+systemctl stop systemd-resolved
+systemctl disable systemd-resolved 
+sed -i -e "s@\b127\\.0\\.1\\.1\b@8.8.8.8@g" /etc/resolv.conf
+sed -i -e "s/search/#search/g" /etc/resolv.conf
