@@ -57,7 +57,7 @@ spec:
           args:
           - /bin/sh
           - -c
-          - sleep 10 && stf provider --connect-sub "tcp://{{ template "fullname" . }}-triproxy-dev:7250" --connect-push "tcp://{{ template "fullname" . }}-triproxy-dev:7270" --min-port "15000" --max-port "25000" --heartbeat-interval "10000" --storage-url "https://{{ .Values.ingress.hostname }}/" --screen-ws-url-pattern "wss://{{ .Values.ingress.hostname }}/$(STF_PROVIDER_PUBLIC_IP)/<%= publicPort %>/" --allow-remote --cleanup "false" 2>&1 | tee /var/log/stf/messages
+          - sleep 10 && stf provider --connect-sub "tcp://{{ template "fullname" . }}-triproxy-dev:7250" --connect-push "tcp://{{ template "fullname" . }}-triproxy-dev:7270" --min-port "15000" --max-port "25000" --heartbeat-interval "10000" --storage-url "http://{{ .Values.ingress.hostname }}/" --screen-ws-url-pattern "ws://{{ .Values.ingress.hostname }}/$(STF_PROVIDER_PUBLIC_IP)/<%= publicPort %>/" --allow-remote --cleanup "false" 2>&1 | tee /var/log/stf/messages
           env:
           - name: RETHINKDB_PORT_28015_TCP
             value: "tcp://{{ .Values.db.url }}:{{ .Values.db.port }}"
