@@ -3,3 +3,5 @@
 . _env
 
 helm uninstall farm
+k0s stop
+k0s reset
