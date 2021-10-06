@@ -1,7 +1,7 @@
 stf:
   image:
-    repository: openstf/stf
-    tag: v3.4.1
+    repository: devicefarmer/stf
+    tag: latest
     pullPolicy: IfNotPresent
   api:
     replicas: 1
