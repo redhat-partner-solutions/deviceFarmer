@@ -20,4 +20,4 @@ deploy_farmer
 
 - Start piloting your remote phone
 
-![STFscreen](./images/stf.png?raw=true)
+![STFscreen](./images/farm.png?raw=true)
