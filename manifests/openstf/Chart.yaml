@@ -3,5 +3,4 @@ description: Control and manage Android devices from your browser
 name: openstf
 version: 1.0.0
 keywords:
- - OpenSTF
-   # - Android
+ - openstf
