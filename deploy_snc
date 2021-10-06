@@ -1,0 +1,2 @@
+sudo k0s install controller --single
+sudo k0s start
