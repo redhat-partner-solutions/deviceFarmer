@@ -12,11 +12,6 @@ spec:
       app: {{ template "fullname" . }}-provider-real
   template:
     metadata:
-      #{{- if .Values.telegraf.config.outputs.prometheus.enabled }}
-      #annotations:
-      #  prometheus.io/scrape: "true"
-      #  prometheus.io/port: "9273"
-      #{{- end }}
       labels:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         app: {{ template "fullname" . }}-provider-real
