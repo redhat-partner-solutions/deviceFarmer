@@ -46,3 +46,13 @@ farm-openstf-provider-real-n2mtm            2/2     Running   0          2m
 ```
 destroy_farmer
 ```
+
+## Packaging the Chart
+
+For distribution purposes at scale it could be useful to package the helm chart into a single archive file. The helm chart can be packaged by runnning:
+
+```
+helm package openstf
+```
+
+In this case `openstf` is the path to the location where the chart source is located. The above command will place the archive `openstf-release.tgz` in the directoy you were when you ran the command.
