@@ -1,15 +1,21 @@
 #!/bin/bash
+set -e
 
-cp /var/lib/k0s/pki/admin.conf ~/admin.conf
 . _env
+. _functions
 
-#metalb 
+m 'deploy flannel' "$GREEN"
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+m 'deploy metallb' "$GREEN"
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
-
-#metallb ip external pool
 kubectl apply -f manifests/metallb.yml
 
+#deploy rethinkdb
+m 'deploy rethinkdb' "$GREEN"
 kubectl apply -f manifests/rethinkdb.yml
 
+#deploy helm chart
+m 'deploy helm' "$GREEN"
 helm install farm ./manifests/openstf/

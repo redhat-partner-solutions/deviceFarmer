@@ -47,6 +47,7 @@ farm-openstf-provider-real-n2mtm            2/2     Running   0          2m
 destroy_farmer
 ```
 
+## Chart structure
 ## Packaging the Chart
 
 For distribution purposes at scale it could be useful to package the helm chart into a single archive file. The helm chart can be packaged by runnning:

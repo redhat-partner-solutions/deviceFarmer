@@ -1,1 +1,1 @@
-KUBECONFIG=~/admin.conf && export KUBECONFIG
+KUBECONFIG=/var/lib/k0s/pki/admin.conf && export KUBECONFIG

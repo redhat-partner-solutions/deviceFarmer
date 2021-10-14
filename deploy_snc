@@ -1,5 +1,9 @@
 #!/bin/bash
 
+. _functions
+
+m 'deploy cluster' "$GREEN"
+
 k0s install controller --single
 k0s start
 

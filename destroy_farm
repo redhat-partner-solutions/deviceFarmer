@@ -1,7 +1,11 @@
 #!/bin/bash
 
 . _env
+. _functions
 
+m 'destroy chart' "$GREEN"
 helm uninstall farm
+
+m 'destroy cluster' "$GREEN"
 k0s stop
 k0s reset
