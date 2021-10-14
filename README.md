@@ -4,19 +4,32 @@ Manifests to deploy most recent stable release of [openstf](https://github.com/D
 
 ## Quickstart
 
+Install the chart with release name `my-farm`:
+
+```console
+helm install my-farm ./manifests/openstf/
+```
+
+## Step by step deployment
+
+- Install [helm](https://helm.sh)
+
 - Deploy your cluster of choice (in this case a single node k8s cluster):
 
-```
+```console
 deploy_snc
 ```
 
-- Deploy openSTF:
+The command deploys a K0s cluster on the local machine. Note that this script and next ones requires root privileges.
+
+- Deploy pre-requirements such as `rethinkdb` and the helm chart:
 
 ```
 deploy_farmer
 ```
+This command also uses flannel SDN and metallb to get external access to openstf services.
 
-- Check openstf pods and rethinkdb requirements are running:
+- At this point, check that openstf pods and rethinkdb requirements are on a `running` state:
  
 ```console
 NAME                                        READY   STATUS    RESTARTS   AGE
@@ -41,13 +54,13 @@ farm-openstf-provider-real-n2mtm            2/2     Running   0          2m
 ![STFscreen](./images/farm.png?raw=true)
 
 
-- Destroy openSTF:
+- Destroy the cluster:
 
-```
+```console
 destroy_farmer
 ```
+ 
 
-## Chart structure
 ## Packaging the Chart
 
 For distribution purposes at scale it could be useful to package the helm chart into a single archive file. The helm chart can be packaged by runnning:
