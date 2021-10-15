@@ -43,8 +43,6 @@ spec:
         - containerPort: 3000
         resources:
 {{ toYaml .Values.stf.api.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -88,8 +86,6 @@ spec:
           name: bind-port
         resources:
 {{ toYaml .Values.stf.app.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -130,8 +126,6 @@ spec:
             name: "{{ template "fullname" . }}-common-environment-variables"
         resources:
 {{ toYaml .Values.stf.auth.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -169,8 +163,6 @@ spec:
             name: "{{ template "fullname" . }}-common-environment-variables"
         resources:
 {{ toYaml .Values.stf.processor.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -210,8 +202,6 @@ spec:
             name: "{{ template "fullname" . }}-common-environment-variables"
         resources:
 {{ toYaml .Values.stf.reaper.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -243,8 +233,6 @@ spec:
             name: "{{ template "fullname" . }}-common-environment-variables"
         resources:
 {{ toYaml .Values.stf.apkStorage.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -276,8 +264,6 @@ spec:
             name: "{{ template "fullname" . }}-common-environment-variables"
         resources:
 {{ toYaml .Values.stf.imgStorage.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -317,8 +303,6 @@ spec:
       volumes:
       - name: storage
         emptyDir: {}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -360,8 +344,6 @@ spec:
             name: "{{ template "fullname" . }}-common-environment-variables"
         resources:
 {{ toYaml .Values.stf.triproxyDev.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -403,8 +385,6 @@ spec:
             name: "{{ template "fullname" . }}-common-environment-variables"
         resources:
 {{ toYaml .Values.stf.triproxyApp.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -449,8 +429,6 @@ spec:
         - containerPort: 3000
         resources:
 {{ toYaml .Values.stf.websocket.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -482,8 +460,6 @@ spec:
               name: "{{ template "fullname" . }}-common-environment-variables"
           resources:
 {{ toYaml .Values.nginx.resources | indent 12 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
       volumes:
         - name: nginx-conf-volume
           configMap:

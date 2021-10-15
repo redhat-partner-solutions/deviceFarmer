@@ -137,7 +137,7 @@ metrics:
   token:
 dns:
   resolver: coredns.kube-system
-  #pullSecret: pullsecret
+pullSecret: []
 ingress:
   enabled: true
   # By default applies proper annotation for nginx ingress

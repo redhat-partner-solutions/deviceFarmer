@@ -33,5 +33,3 @@ spec:
           value: "{{.Values.db.password}}"
         resources:
 {{ toYaml .Values.stf.migration.resources | indent 10 }}
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}

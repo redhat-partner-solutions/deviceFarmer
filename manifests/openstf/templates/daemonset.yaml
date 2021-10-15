@@ -78,5 +78,3 @@ spec:
           path: /sys
       - name: logs
         emptyDir: {}
-      imagePullSecrets:
-      - name: {{ .Values.pullSecret }}
