@@ -4,10 +4,15 @@ Manifests to deploy most recent stable release of [openstf](https://github.com/D
 
 ## Quickstart
 
-Install the chart with release name `my-farm`:
+Install the chart:
 
 ```console
 helm install my-farm ./manifests/openstf/
+```
+This command will create an instance of the chart running in the cluster with the name `my-farm`. To delete the instance from your cluster:
+
+```console
+helm delete my-farm 
 ```
 
 ## Step by step deployment
@@ -20,14 +25,14 @@ helm install my-farm ./manifests/openstf/
 deploy_snc
 ```
 
-The command deploys a K0s cluster on the local machine. Note that this script and next ones requires root privileges.
+The command deploys a K0s cluster on the local machine. Note that this script requires root privileges.
 
 - Deploy pre-requirements such as `rethinkdb` and the helm chart:
 
-```
+```console
 deploy_farmer
 ```
-This command also uses flannel SDN and metallb to get external access to openstf services.
+This command also uses flannel SDN and metallb to get external access to openstf services. (Root privileges required.)
 
 - At this point, check that openstf pods and rethinkdb requirements are on a `running` state:
  
@@ -60,6 +65,10 @@ farm-openstf-provider-real-n2mtm            2/2     Running   0          2m
 destroy_farmer
 ```
  
+## Chart description
+
+
+
 
 ## Packaging the Chart
 

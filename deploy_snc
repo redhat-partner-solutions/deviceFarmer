@@ -2,6 +2,13 @@
 
 . _functions
 
+m 'install helm' "$GREEN"
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+HELM_INSTALL_DIR=/usr/bin ./get_helm.sh
+
+
 m 'deploy cluster' "$GREEN"
 
 k0s install controller --single
