@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adb-provider
+  release-version: "1.0"
+spec:
+  containers:
+  - env:
+    - name: HOST_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.hostIP
+    image: amarruedo/adb-butler:latest
+    imagePullPolicy: Always
+    name: adb-butler
+    securityContext:
+      privileged: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /dev
+      name: dev
+    - mountPath: /sys
+      name: sys
+  - args:
+    - /bin/sh
+    - -c
+    - sleep 10 && stf provider --connect-sub "tcp://farm-openstf-triproxy-dev:7250"
+      --connect-push "tcp://farm-openstf-triproxy-dev:7270" --min-port "15000" --max-port
+      "25000" --heartbeat-interval "10000" --storage-url "http://farm-openstf-nginx/"
+      --screen-ws-url-pattern "ws://farm-openstf-nginx/$(STF_PROVIDER_PUBLIC_IP)/<%=
+      publicPort %>/" --allow-remote --cleanup "false" 2>&1 | tee /var/log/stf/messages
+    env:
+    - name: RETHINKDB_PORT_28015_TCP
+      value: tcp://rethinkdb-svc:28015
+    - name: RETHINKDB_ENV_AUTHKEY
+    - name: ZMQ_TCP_KEEPALIVE
+      value: "1"
+    - name: ZMQ_TCP_KEEPALIVE_IDLE
+      value: "60"
+    - name: STF_PROVIDER_PUBLIC_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    image: devicefarmer/stf:latest
+    imagePullPolicy: Always
+    name: stf-provider
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/log/stf
+      name: logs
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: hack-things
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - hostPath:
+      path: /dev
+      type: ""
+    name: dev
+  - hostPath:
+      path: /sys
+      type: ""
+    name: sys
+  - hostPath:
+      path: /var/log/stf
+      type: ""
+    name: logs
