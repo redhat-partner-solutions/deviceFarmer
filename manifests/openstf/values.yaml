@@ -1,4 +1,7 @@
 stf:
+  mountusb:
+    overkube:
+      enabled: true
   image:
     repository: devicefarmer/stf
     tag: latest

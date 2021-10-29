@@ -1,1 +1,3 @@
 KUBECONFIG=/var/lib/k0s/pki/admin.conf && export KUBECONFIG
+DEBUG="--debug"
+SIMULATE="--dry-run"

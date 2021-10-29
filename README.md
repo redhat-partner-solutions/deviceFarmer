@@ -17,9 +17,9 @@ helm delete my-farm
 
 ## Step by step deployment
 
-- Install [helm](https://helm.sh)
+- Step 1) Install [helm](https://helm.sh)
 
-- Deploy your cluster of choice (in this case a single node k8s cluster):
+- Step 2) Deploy your cluster of choice (in this case a single node k8s cluster):
 
 ```console
 deploy_snc
@@ -27,14 +27,29 @@ deploy_snc
 
 The command deploys a K0s cluster on the local machine. Note that this script requires root privileges.
 
-- Deploy pre-requirements such as `rethinkdb` and the helm chart:
+- Step 3 option a) Deploy pre-requirements such as `rethinkdb` and all the deviceFarmer apps in a helm chart:
 
 ```console
-deploy_farmer
+deploy_farm
 ```
-This command also uses flannel SDN and metallb to get external access to openstf services. (Root privileges required.)
 
-- At this point, check that openstf pods and rethinkdb requirements are on a `running` state:
+The above command also uses flannel SDN and metallb to get external access to openstf services. (Root privileges required.)
+
+- Step 3 option b) Assume adb-provider runs using podman in a node outside the k8s cluster. In the node mounting the phone by usb run:
+
+```console
+podman play kube usb-phone.yaml
+```
+
+- cont Step 3 option b) Deploy pre-requirements and deviceFarmer deployment except the apps needed to mount the phone:
+
+```console
+deploy_farm_local_usb
+```
+	
+The above command also uses flannel SDN and metallb to get external access to openstf services. (Root privileges required.)
+
+- Step 4) check that openstf pods and rethinkdb requirements are on a `running` state:
  
 ```console
 NAME                                        READY   STATUS    RESTARTS   AGE
@@ -54,12 +69,12 @@ farm-openstf-storage-756f5f56c6-bkvrq       1/1     Running   0          119s
 farm-openstf-provider-real-n2mtm            2/2     Running   0          2m
 ```
 
-- Plug phone via USB to the k8s node mounting the USB. Start piloting your remote phone fleet:
+- Step 5) Plug phone via USB to the k8s node mounting the USB. Start piloting your remote phone fleet:
 
 ![STFscreen](./images/farm.png?raw=true)
 
 
-- Destroy the cluster:
+- Destroy the apps and the cluster:
 
 ```console
 destroy_farmer

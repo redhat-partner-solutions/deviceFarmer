@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+. _env
+. _functions
+
+m 'deploy flannel' "$GREEN"
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/release/v0.14.1/Documentation/kube-flannel.yml
+
+m 'deploy metallb' "$GREEN"
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+kubectl apply -f manifests/metallb.yml
+
+#deploy rethinkdb
+m 'deploy rethinkdb' "$GREEN"
+kubectl apply -f manifests/rethinkdb.yml
+
+#deploy helm chart
+m 'deploy chart instance' "$GREEN"
+helm install farm -f ./manifests/openstf/values.yaml \
+	--set stf.mountusb.overkube.enabled=false ./manifests/openstf 
