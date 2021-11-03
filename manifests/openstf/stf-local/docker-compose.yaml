@@ -1,0 +1,11 @@
+version: '3'
+services:
+  adbd:
+    image: amarruedo/adb-butler:latest
+    privileged: true
+    container_name: adb-butler
+    restart: always
+    volumes:
+      - "/dev/bus/usb:/dev/bus/usb"
+    environment:
+      - HOST_IP=192.168.1.134
