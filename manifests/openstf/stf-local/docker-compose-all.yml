@@ -27,10 +27,10 @@ services:
     environment:
       - TZ='Europe/Madrid'
       - RETHINKDB_PORT_28015_TCP=tcp://rethinkdb:28015
-      - STF_ADMIN_EMAIL=<putmail>
-      - STF_ADMIN_NAME=<adminname>
+      - STF_ADMIN_EMAIL=<STF_ADMIN_MAIL_ADDRESS>
+      - STF_ADMIN_NAME=<YOUR_STF_ADMIN_NAME>
     restart: unless-stopped
-    command: stf local --adb-host adb --public-ip "EXPOSED_IP" --provider-min-port 7400 --provider-max-port 7500
+    command: stf local --adb-host adb --public-ip $IP --provider-min-port 7400 --provider-max-port 7500
 
 volumes:
   rethinkdb-data: {}

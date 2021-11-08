@@ -94,3 +94,21 @@ helm package openstf
 ```
 
 In this case `openstf` is the path to the location where the chart source is located. The above command will place the archive `openstf-release.tgz` in the directoy you were when you ran the command.
+
+# All-in-one deviceFarmer 
+
+To run device-farmer outside k8s, 
+Set the environment variables in the `docker-compose-all.yml`
+
+	* TZ
+	* RETHINKDB_PORT_28015_TCP
+	* STF_ADMIN_EMAIL
+	* STF_ADMIN_NAME
+
+Run the docker-compose.yaml:
+
+```
+cd manifests/openstf/stf-local/
+echo IP=<YOUR_PUBLIC_IP_ADDRESS> >> .env
+podman-compose -f docker-compose-all.yml up -d
+```
