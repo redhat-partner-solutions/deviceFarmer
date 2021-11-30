@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>STF</short>
+  <description> openSTF is a SW to manage remotely phones.</description>
+  <port port="7400-7500" protocol="tcp"/>
+  <port port="7100" protocol="tcp"/>
+  <port port="7110" protocol="tcp"/>
+</service>
