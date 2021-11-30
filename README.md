@@ -105,7 +105,7 @@ Set the environment variables in the `docker-compose-all.yml`
 	* STF_ADMIN_EMAIL
 	* STF_ADMIN_NAME
 
-Run the docker-compose.yaml:
+Run `podman-compose` as root to mount the usb:
 
 ```
 cd manifests/openstf/stf-local/
