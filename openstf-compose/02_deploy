@@ -2,13 +2,6 @@
 
 set +x
 
-# Enable STF access: firewalli rule
-firewall-cmd --new-service-from-file=./firewalld/stf.xml --permanent
-firewall-cmd --zone=public --add-service=stf
-
-# udev rule
-cp ./udev/51-android.rules /etc/udev/rules.d/51-android.rules
-udevadm control --reload-rules
-
 #deployment
+echo IP=192.168.1.134 >> .env
 podman-compose -f docker-compose-all.yml up -d

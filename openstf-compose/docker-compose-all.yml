@@ -3,7 +3,7 @@ version: "3"
 services:
   rethinkdb:
     container_name: rethinkdb
-    image: rethinkdb:2.3
+    image: quay.io/jnunez/rethinkdb:2.3
     restart: unless-stopped
     volumes:
         - "rethinkdb-data:/data"
@@ -11,7 +11,7 @@ services:
 
   adb:
     container_name: adb
-    image: devicefarmer/adb:latest
+    image: quay.io/jnunez/adb:latest
     restart: unless-stopped
     volumes:
       - "/dev/bus/usb:/dev/bus/usb"
@@ -19,7 +19,7 @@ services:
 
   stf:
     container_name: stf
-    image: devicefarmer/stf
+    image: quay.io/jnunez/stf:v3.6.1
     ports:
       - "7100:7100"
       - "7110:7110"
@@ -27,10 +27,10 @@ services:
     environment:
       - TZ='Europe/Madrid'
       - RETHINKDB_PORT_28015_TCP=tcp://rethinkdb:28015
-      - STF_ADMIN_EMAIL=<STF_ADMIN_MAIL_ADDRESS>
-      - STF_ADMIN_NAME=<YOUR_STF_ADMIN_NAME>
+      - STF_ADMIN_EMAIL=someone@rh.com
+      - STF_ADMIN_NAME=admin
     restart: unless-stopped
-    command: stf local --adb-host adb --public-ip $IP --provider-min-port 7400 --provider-max-port 7500
+    command: stf local --adb-host adb --public-ip ${IP} --provider-min-port 7400 --provider-max-port 7500
 
 volumes:
   rethinkdb-data: {}

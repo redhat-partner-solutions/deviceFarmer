@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set +x
+
+podman-compose -f docker-compose-all.yml down
