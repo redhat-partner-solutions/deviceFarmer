@@ -29,6 +29,7 @@ services:
       - RETHINKDB_PORT_28015_TCP=tcp://rethinkdb:28015
       - STF_ADMIN_EMAIL=someone@rh.com
       - STF_ADMIN_NAME=admin
+      - SCREEN_JPEG_QUALITY=20
     restart: unless-stopped
     command: stf local --adb-host adb --public-ip ${IP} --provider-min-port 7400 --provider-max-port 7500
 
