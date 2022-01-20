@@ -4,7 +4,10 @@ set +x
 
 # Enable STF access: firewalli rule
 firewall-cmd --new-service-from-file=./firewalld/stf.xml --permanent
-firewall-cmd --zone=public --add-service=stf
+firewall-cmd --zone=public --add-service=stf --permanent
+
+# Reload firewall rules to take affect
+firewall-cmd --complete-reload
 
 # udev rule
 cp ./udev/51-android.rules /etc/udev/rules.d/51-android.rules
