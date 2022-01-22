@@ -3,7 +3,7 @@ version: "3"
 services:
   rethinkdb:
     container_name: rethinkdb
-    image: quay.io/jnunez/rethinkdb:2.3
+    image: quay.io/redhat-partner-solutions/rethinkdb:2.3
     restart: unless-stopped
     volumes:
         - "rethinkdb-data:/data"
@@ -11,7 +11,7 @@ services:
 
   adb:
     container_name: adb
-    image: quay.io/jnunez/adb:latest
+    image: quay.io/redhat-partner-solutions/adb:latest
     restart: unless-stopped
     volumes:
       - "/dev/bus/usb:/dev/bus/usb"
@@ -19,7 +19,7 @@ services:
 
   stf:
     container_name: stf
-    image: quay.io/jnunez/stf:v3.6.1
+    image: quay.io/redhat-partner-solutions/stf:v3.6.1
     ports:
       - "7100:7100"
       - "7110:7110"
